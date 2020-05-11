@@ -36,4 +36,9 @@ class TheoriesStoreControllerTest {
 
         TheoriesController.run(req).block();
     }
+
+    @Test
+    void test3() {
+
+    }
 }

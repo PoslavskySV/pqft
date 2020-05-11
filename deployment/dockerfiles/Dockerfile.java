@@ -1,12 +1,14 @@
 FROM maven:3-jdk-14 AS builder-base
 
-RUN mkdir -p /build/q.core
+RUN mkdir -p /build/q.core && mkdir -p /build/redberry
 
 WORKDIR /build
 
 RUN curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -o jmx_prometheus_javaagent.jar
 COPY deployment/dockerfiles/jmx-config.yaml jmx-config.yaml
 
+COPY redberry redberry
+RUN cd redberry && mvn clean install -DskipTests
 
 COPY q.core/pom.xml q.core/pom.xml
 RUN cd q.core && mvn verify clean --fail-never

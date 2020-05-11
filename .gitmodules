@@ -1,0 +1,4 @@
+[submodule "redberry"]
+	path = redberry
+	url = https://github.com/redberry-cas/redberry
+	branch = develop
