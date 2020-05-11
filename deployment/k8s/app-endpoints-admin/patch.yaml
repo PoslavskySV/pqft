@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app
+  labels:
+    app: app-endpoints-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-endpoints-admin
+  template:
+    metadata:
+      labels:
+        app: app-endpoints-admin
+    spec:
+      containers:
+        - name: app
+          args: [ "cc.redberry.qplatform.endpoints.admin.AdminServer" ]
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /ping
+          env:
+            - name: LOG_LEVEL
+              value: "WARN"
+            - name: Q_LOG_LEVEL
+              value: "INFO"
+            - name: Q_AUTH_JWT_KEY_FILE
+              value: "/secrets/jwt/key"
+          resources:
+            requests:
+              memory: "384Mi"
+              cpu: "150m"
+            limits:
+              memory: "2048Mi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: jwt-secret
+              mountPath: "/secrets/jwt"
+              readOnly: true
+      volumes:
+        - name: jwt-secret
+          secret:
+            secretName: jwt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: q
+spec:
+  selector:
+    app: app-endpoints-admin
+  ports:
+    - port: 8080
+      targetPort: http

@@ -1,0 +1,12 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: kafka-zookeeper-regional
+provisioner: kubernetes.io/gce-pd
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+parameters:
+#  replication-type: regional-pd
+#  zones: us-central1-c, us-central1-b
+  replication-type: none
+  type: pd-ssd

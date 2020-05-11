@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  namespace: kafka
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: broker
+          command:
+            - ./bin/kafka-server-start.sh
+            - /etc/kafka/server.properties
+            - --override
+            - message.max.bytes=33554432
+            - --override
+            - replica.fetch.max.bytes=33554432

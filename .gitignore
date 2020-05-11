@@ -1,0 +1,10 @@
+.idea
+*.iml
+go.sum
+deployment/k8s/abm/secrets
+*.secret.txt
+*.secret.json
+.workdir
+190819.key
+vendor/
+telepresence.log

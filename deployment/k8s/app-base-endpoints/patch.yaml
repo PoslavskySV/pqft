@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app
+  labels:
+    app: app-endpoints
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-endpoints
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: "/metrics/"
+        prometheus.io/scrape: "true"
+      labels:
+        app: app-endpoints
+    spec:
+      containers:
+        - name: app
+          resources:
+            requests:
+              memory: "1024Mi"
+            limits:
+              memory: "1024Mi"
+          env:
+            - name: Q_AUTH_X_AUTH_TOKEN_FILE
+              value: "/secrets/x-auth/token"
+          volumeMounts:
+            - name: x-auth-secret
+              mountPath: "/secrets/x-auth"
+              readOnly: true
+      volumes:
+        - name: x-auth-secret
+          secret:
+            secretName: x-auth
+---

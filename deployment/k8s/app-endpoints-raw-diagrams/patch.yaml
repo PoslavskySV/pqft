@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app
+  labels:
+    app: app-endpoints-raw-diagrams
+spec:
+  selector:
+    matchLabels:
+      app: app-endpoints-raw-diagrams
+  volumeClaimTemplates:
+    - metadata:
+        name: app-endpoints-raw-diagrams-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+  template:
+    metadata:
+      labels:
+        app: app-endpoints-raw-diagrams
+    spec:
+      containers:
+        - name: app
+          args: [ "cc.redberry.qplatform.endpoints.kafka.RawDiagramsStore" ]
+          resources:
+            requests:
+              memory: "512Mi"
+            limits:
+              memory: "1024Mi"
+          volumeMounts:
+            - mountPath: /kafka-state
+              name: app-endpoints-raw-diagrams-data
+          env:
+            - name: LOG_LEVEL
+              value: "WARN"
+            - name: QP_LOG_LEVEL
+              value: "INFO"
+            - name: KAFKA_APP_NAME
+              value: "raw-diagrams-store"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: q
+spec:
+  selector:
+    app: app-endpoints-raw-diagrams
+  ports:
+    - port: 8080
+      targetPort: http

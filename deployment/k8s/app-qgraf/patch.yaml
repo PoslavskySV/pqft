@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app
+  labels:
+    app: app-qgraf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-qgraf
+  template:
+    metadata:
+      labels:
+        app: app-qgraf
+    spec:
+      containers:
+        - name: app
+          args: [ "cc.redberry.qplatform.qgraf.QgrafApp" ]
+          resources:
+            requests:
+              memory: "256"
+            limits:
+              memory: "1024Mi"
+          env:
+            - name: LOG_LEVEL
+              value: "WARN"
+            - name: QP_LOG_LEVEL
+              value: "INFO"

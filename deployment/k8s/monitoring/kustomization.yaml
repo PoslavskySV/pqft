@@ -1,0 +1,31 @@
+namespace: monitoring
+
+secretGenerator:
+  - name: grafana-secrets
+    type: Opaque
+    files:
+      - github-client-id=200-grafana-github-client-id.secret.txt
+      - github-client-secret=200-grafana-github-client-secret.secret.txt
+      - github-organisation-name=200-grafana-github-organisation-name.secret.txt
+      - github-team-ids=200-grafana-github-team-ids.secret.txt
+
+configMapGenerator:
+  - name: prometheus-server-conf
+    files:
+      - prometheus.yml
+  - name: prometheus-rules
+    files:
+      - alert.rules
+  - name: grafana-dashs
+    files:
+      - best-match.json
+
+resources:
+  - 000-namespace.yaml
+  - 010-prometheus-rbac.yaml
+  - 030-prometheus-storage.yaml
+  - 040-prometheus-deployment.yaml
+  - 050-kube-state-metrics.yaml
+  - 060-grafana-configmap.yaml
+  - 070-grafana-storage.yaml
+  - 080-grafana.yaml

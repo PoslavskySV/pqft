@@ -1,0 +1,21 @@
+namespace: kafka
+
+bases:
+  - dependencies/kubernetes-kafka/rbac-namespace-default
+  - dependencies/kubernetes-kafka/zookeeper
+  - dependencies/kubernetes-kafka/kafka
+
+patchesStrategicMerge:
+#  - patch-affinity.yaml
+  - patch-memory.yaml
+  - patch-pv.yaml
+  - patch-broker.yaml
+  - dependencies/kubernetes-kafka/prometheus/50-kafka-jmx-exporter-patch.yml
+  - patch-jmx-exporter.yml
+
+resources:
+  - 000-namespace.yaml
+  - 010-gke-storageclass-broker-pd.yaml
+  - 010-gke-storageclass-zookeeper-pd.yaml
+  - 010-gke-storageclass-zookeeper-regional.yaml
+  - dependencies/kubernetes-kafka/prometheus/10-metrics-config.yml

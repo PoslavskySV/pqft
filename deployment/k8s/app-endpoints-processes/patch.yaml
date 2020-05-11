@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app
+  labels:
+    app: app-endpoints-processes
+spec:
+  selector:
+    matchLabels:
+      app: app-endpoints-processes
+  volumeClaimTemplates:
+    - metadata:
+        name: app-endpoints-processes-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 16Gi
+  template:
+    metadata:
+      labels:
+        app: app-endpoints-processes
+    spec:
+      containers:
+        - name: app
+          args: [ "cc.redberry.qplatform.endpoints.kafka.ProcessesStore" ]
+          resources:
+            requests:
+              memory: "512Mi"
+            limits:
+              memory: "1024Mi"
+          volumeMounts:
+            - mountPath: /kafka-state
+              name: app-endpoints-processes-data
+          env:
+            - name: LOG_LEVEL
+              value: "WARN"
+            - name: QP_LOG_LEVEL
+              value: "INFO"
+            - name: KAFKA_APP_NAME
+              value: "processes-store"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: q
+spec:
+  selector:
+    app: app-endpoints-processes
+  ports:
+    - port: 8080
+      targetPort: http

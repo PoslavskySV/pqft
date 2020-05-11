@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: topic-cruise-control-metrics
+  namespace: kafka
+spec:
+  template:
+    spec:
+      containers:
+      - name: topic-create
+        image: solsson/kafka:2.2.1@sha256:450c6fdacae3f89ca28cecb36b2f120aad9b19583d68c411d551502ee8d0b09b
+        command:
+        - ./bin/kafka-topics.sh
+        - --zookeeper
+        -   zookeeper.kafka.svc.cluster.local:2181
+        - --create
+        - --if-not-exists
+        - --topic
+        -   __CruiseControlMetrics
+        - --partitions
+        -   '12'
+        - --replication-factor
+        -   '3'
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+      restartPolicy: Never

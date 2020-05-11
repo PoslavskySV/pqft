@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  replicas: 1
+  serviceName: app
+  selector:
+    matchLabels:
+      app: app
+  updateStrategy:
+    type: "RollingUpdate"
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: "/metrics/"
+        prometheus.io/scrape: "true"
+      labels:
+        app: app
+    spec:
+#      nodeSelector:
+#        pool: default-pool
+#      tolerations:
+#        - key: pool
+#          operator: Equal
+#          value: q
+#          effect: NoSchedule
+      containers:
+        - name: app
+          image: gcr.io/qftplatform/q-core
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: jmx
+              containerPort: 8090
+            - name: metrics-http
+              containerPort: 8080
+            - name: metrics-jmx
+              containerPort: 8090
+          envFrom:
+            - configMapRef:
+                name: global-env-vars
+          resources:
+            requests:
+              memory: "384Mi"
+              cpu: 250m
+            limits:
+              memory: "384Mi"
+              cpu: 500m
+          env:
+            - name: HTTP_PORT
+              value: "8080"
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: JMX_PORT
+              value: "5555"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","-c","rm -rf /kafka-state/*"]
+#          volumeMounts:
+#            - name: scratch-space
+#              mountPath: /kafka-state
+#              # must be changed to subPathExpr for k8s 1.14
+#              subPath: $(POD_NAME)-$(POD_UID)
+#      volumes:
+#        - name: scratch-space
+#          hostPath:
+#            path: "/mnt/disks/ssd0"

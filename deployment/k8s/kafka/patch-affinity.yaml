@@ -1,0 +1,50 @@
+#apiVersion: apps/v1
+#kind: StatefulSet
+#metadata:
+#  name: kafka
+#  namespace: kafka
+#spec:
+#  template:
+#    spec:
+#      nodeSelector:
+#        pool: q
+#      tolerations:
+#        - key: pool
+#          operator: Equal
+#          value: q
+#          effect: NoSchedule
+#
+#---
+#
+#apiVersion: apps/v1
+#kind: StatefulSet
+#metadata:
+#  name: zoo
+#  namespace: kafka
+#spec:
+#  template:
+#    spec:
+#      nodeSelector:
+#        pool: q
+#      tolerations:
+#        - key: pool
+#          operator: Equal
+#          value: q
+#          effect: NoSchedule
+#---
+#
+#apiVersion: apps/v1
+#kind: StatefulSet
+#metadata:
+#  name: pzoo
+#  namespace: kafka
+#spec:
+#  template:
+#    spec:
+#      nodeSelector:
+#        pool: q
+#      tolerations:
+#        - key: pool
+#          operator: Equal
+#          value: q
+#          effect: NoSchedule

@@ -1,0 +1,7 @@
+bases:
+  - ../app-base-endpoints
+
+nameSuffix: -raw-diagrams
+
+patchesStrategicMerge:
+  - patch.yaml

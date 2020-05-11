@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app
+  labels:
+    app: app-endpoints-theories
+spec:
+  selector:
+    matchLabels:
+      app: app-endpoints-theories
+  volumeClaimTemplates:
+    - metadata:
+        name: app-endpoints-theories-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 16Gi
+  template:
+    metadata:
+      labels:
+        app: app-endpoints-theories
+    spec:
+      containers:
+        - name: app
+          args: [ "cc.redberry.qplatform.endpoints.kafka.TheoriesStore" ]
+          resources:
+            requests:
+              memory: "512Mi"
+            limits:
+              memory: "1024Mi"
+          volumeMounts:
+            - mountPath: /kafka-state
+              name: app-endpoints-theories-data
+          env:
+            - name: LOG_LEVEL
+              value: "WARN"
+            - name: QP_LOG_LEVEL
+              value: "INFO"
+            - name: KAFKA_APP_NAME
+              value: "theories-store"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: q
+spec:
+  selector:
+    app: app-endpoints-theories
+  ports:
+    - port: 8080
+      targetPort: http

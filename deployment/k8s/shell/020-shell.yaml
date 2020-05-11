@@ -1,0 +1,60 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: q-dev
+  name: shell-init
+data:
+  init.sh: |
+    #!/bin/bash
+
+    useradd -m -s /bin/bash theuser
+
+    echo 'export PATH="${PATH}:/dist/kafka/bin"' >> /home/theuser/.bashrc
+
+    apt-get update
+    apt-get install -y telnet iputils-ping htop curl python mc bombardier default-jdk htop iotop parallel jq screen psmisc
+
+    mkdir /dist || true
+    cd /dist
+
+    curl "https://www.apache.org/dist/kafka/2.2.0/kafka_2.12-2.2.0.tgz" -o kafka.tgz
+    tar -xzf kafka.tgz
+    mv kafka_* kafka
+
+    while :; do
+      echo '.';
+      sleep 5;
+    done
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  namespace: q-dev
+  name: shell
+spec:
+  containers:
+    - name: shell
+      image: ubuntu
+      command: [ "/opt/init/init.sh" ] # ["/bin/bash", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+      volumeMounts:
+        - name: shell-init
+          mountPath: /opt/init
+        - name: home
+          mountPath: /home
+      resources:
+        requests:
+          memory: 384Mi
+        limits:
+          memory: 384Mi
+
+  restartPolicy: Never
+  volumes:
+    - name: shell-init
+      configMap:
+        name: shell-init
+        defaultMode: 0777
+    - name: home
+      persistentVolumeClaim:
+        claimName: shell-pvc

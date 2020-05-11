@@ -1,0 +1,7 @@
+bases:
+  - ../app-base-endpoints
+
+nameSuffix: -theories
+
+patchesStrategicMerge:
+  - patch.yaml

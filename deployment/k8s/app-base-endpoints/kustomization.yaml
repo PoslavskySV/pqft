@@ -1,0 +1,10 @@
+bases:
+  - ../app-base
+
+nameSuffix: -endpoints
+
+resources:
+  - 010-app-endpoints-service.yaml
+
+patchesStrategicMerge:
+  - patch.yaml

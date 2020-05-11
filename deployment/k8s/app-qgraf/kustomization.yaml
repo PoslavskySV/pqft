@@ -1,0 +1,7 @@
+bases:
+  - ../app-base
+
+nameSuffix: -qgraf
+
+patchesStrategicMerge:
+  - patch.yaml

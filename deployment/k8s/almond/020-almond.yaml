@@ -1,0 +1,59 @@
+#kind: ConfigMap
+#apiVersion: v1
+#metadata:
+#  namespace: q-dev
+#  name: almond-init
+#data:
+#  init.sh: |
+#    #!/bin/bash
+#
+#    apt-get update
+#    apt-get install --no-install-recommends -y maven
+#
+#    while :; do
+#      echo '.';
+#      sleep 5;
+#    done
+#
+#
+##    su jovyan
+##    notebook-start.sh --allow-root --NotebookApp.token=''
+#---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  namespace: q-dev
+  name: almond
+spec:
+  securityContext:
+    fsGroup: 0777
+    runAsUser: 0
+  containers:
+    - name: almond
+      image: jbindinga/java-notebook
+      env:
+        - name: GRANT_SUDO
+          value: "yes"
+#      volumeMounts:
+#        - name: almond-init
+#          mountPath: /opt/initc
+#        - name: home
+#          mountPath: /home
+      ports:
+        - name: http
+          containerPort: 8888
+      resources:
+        requests:
+          memory: 684Mi
+        limits:
+          memory: 684Mi
+  restartPolicy: Never
+#  volumes:
+#    - name: almond-init
+#      configMap:
+#        name: almond-init
+#        defaultMode: 0777
+#    - name: home
+#      persistentVolumeClaim:
+#        claimName: almond-pvc

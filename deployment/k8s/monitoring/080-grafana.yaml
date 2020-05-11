@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: monitoring
+  name: grafana
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  serviceName: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:6.3.3
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 2
+            timeoutSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 250Mi
+          volumeMounts:
+            - name: dashboards-volume
+              mountPath: /var/lib/grafana/dashboards/dashboards.json
+              subPath: dashboards.json
+            - name: storage-volume
+              mountPath: /var/lib/grafana
+            - name: dashboard-provider
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: datasources-provider
+              mountPath: /etc/grafana/provisioning/datasources
+          env:
+            - name: GF_SERVER_HTTP_PORT
+              value: "3000"
+            # - name: GF_AUTH_ANONYMOUS_ENABLED
+            #   value: "true"
+            # - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+            #   value: Admin
+            # - name: GF_SERVER_ROOT_URL
+            #   value: /
+            - name: GF_AUTH_DISABLE_LOGIN_FORM
+              value: "true"
+            - name: GF_USERS_AUTO_ASSIGN_ORG_ROLE
+              value: "Admin"
+            - name: GF_AUTH_GITHUB_ENABLED
+              value: "true"
+            - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
+              value: "true"
+            - name: GF_AUTH_GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secrets
+                  key: github-client-id
+            - name: GF_AUTH_GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secrets
+                  key: github-client-secret
+            - name: GF_AUTH_GITHUB_SCOPES
+              value: "user:email,read:org"
+            - name: GF_AUTH_GITHUB_AUTH_URL
+              value: "https://github.com/login/oauth/authorize"
+            - name: GF_AUTH_GITHUB_TOKEN_URL
+              value: "https://github.com/login/oauth/access_token"
+            - name: GF_AUTH_GITHUB_API_URL
+              value: "https://api.github.com/user"
+            - name: GF_AUTH_GITHUB_TEAM_IDS
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secrets
+                  key: github-team-ids
+            - name: GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secrets
+                  key: github-organisation-name
+
+      securityContext:
+        fsGroup: 0777
+      volumes:
+        - name: dashboards-volume
+          configMap:
+            name: grafana-dashs
+        - name: dashboard-provider
+          configMap:
+            name: grafana-dash-provider
+            items:
+              - key: providers.yaml
+                path: providers.yaml
+        - name: datasources-provider
+          configMap:
+            name: grafana-datasources-provider
+            items:
+              - key: providers.yaml
+                path: providers.yaml
+  volumeClaimTemplates:
+    - metadata:
+        name: storage-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "fast"
+        resources:
+          requests:
+            storage: 16Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: monitoring
+  name: grafana
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: grafana
