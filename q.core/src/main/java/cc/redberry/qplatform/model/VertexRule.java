@@ -9,7 +9,11 @@ import java.util.List;
 /**
  *
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class VertexRule extends AbstractRule {
     /** Particles in vertex (all incoming) */
     public List<FieldRules> particles;

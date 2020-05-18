@@ -18,6 +18,9 @@ RUN cd q.core && mvn clean install -DskipTests
 
 FROM openjdk:14.0.1-jdk AS runtime-base
 
+COPY qgraf-src qgraf-src
+RUN yum update -y && yum install -y gcc-gfortran gdb make && cd qgraf-src && gfortran qgraf-3.4.2.f -o qgraf
+
 RUN mkdir /app \
     && mkdir /kafka-state
 
@@ -37,5 +40,7 @@ ENTRYPOINT ["java", \
             "-cp", "app.jar"]
 
 COPY --from=builder-base /build/q.core/target/qPlatform-1.0-SNAPSHOT-distribution.jar /app/app.jar
+COPY --from=runtime-base /qgraf-src/qgraf /app/qgraf
+COPY --from=runtime-base /qgraf-src/qgrafSty.sty /app/qgrafSty.sty
 COPY --from=builder-base /build/jmx_prometheus_javaagent.jar /app/jmx_prometheus_javaagent.jar
 COPY --from=builder-base /build/jmx-config.yaml /app/jmx-config.yaml

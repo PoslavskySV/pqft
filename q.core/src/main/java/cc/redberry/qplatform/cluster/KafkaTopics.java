@@ -6,6 +6,8 @@ import cc.redberry.qplatform.model.Theory;
 import cc.redberry.qplatform.model.diagram.Diagram;
 import org.apache.kafka.common.serialization.Serdes;
 
+import java.util.concurrent.ExecutionException;
+
 import static cc.redberry.qplatform.util.MemoryUnit.*;
 import static org.apache.kafka.clients.producer.ProducerConfig.*;
 import static org.apache.kafka.common.config.TopicConfig.*;
@@ -114,5 +116,14 @@ public final class KafkaTopics {
     /** Diagram ID -> Theory ID */
     public static String did2tid(String did) {
         return pid2tid(did2pid(did));
+    }
+
+    /** Initialize all Kafka topics */
+    public static void initAll() throws ExecutionException {
+        KafkaInit init = new KafkaInit();
+        init.createTopic(KafkaTopics.Theories);
+        init.createTopic(KafkaTopics.MatrixElementDescriptions);
+        init.createTopic(KafkaTopics.RawDiagrams);
+        init.execute();
     }
 }

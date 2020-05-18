@@ -11,11 +11,7 @@ public class AdminServer {
     private AdminServer() {}
 
     public static void main(String[] args) throws Exception {
-        KafkaInit init = new KafkaInit();
-        init.createTopic(KafkaTopics.Theories);
-        init.createTopic(KafkaTopics.MatrixElementDescriptions);
-        init.createTopic(KafkaTopics.RawDiagrams);
-        init.execute();
+        KafkaTopics.initAll();
 
         try (var qgraf = new QgrafController()) {
             ServerUtil.runServer("admin",

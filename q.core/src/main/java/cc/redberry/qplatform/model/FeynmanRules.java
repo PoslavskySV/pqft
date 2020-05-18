@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
  */
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FeynmanRules {
     /** optional settings */
     public Settings settings;

@@ -1,6 +1,5 @@
 package cc.redberry.qplatform.model;
 
-import cc.redberry.qplatform.qgraf.QgrafParticle;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.util.Map;
@@ -8,8 +7,9 @@ import java.util.Map;
 /** Rules for particles */
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FieldRules {
     /** particle */
     public FieldType fieldType;

@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -105,8 +106,18 @@ public class QgrafModel {
         Path sty = dir.resolve("qgrafSty.sty");
         Path exe = dir.resolve("qgraf");
 
-        Files.copy(Paths.get(getClass().getResource("qgrafSty.sty").toURI()), sty, StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(Paths.get(getClass().getResource("qgraf").toURI()), exe, StandardCopyOption.REPLACE_EXISTING);
+        Path styPath = null, exePath = null;
+        if (System.getenv("QGRAF_BIN") != null) {
+            styPath = Paths.get(System.getenv("QGRAF_STY"));
+            exePath = Paths.get(System.getenv("QGRAF_BIN"));
+        } else {
+            styPath = Paths.get(getClass().getResource("qgrafSty.sty").toURI());
+            exePath = Paths.get(getClass().getResource("qgraf").toURI());
+        }
+
+        Files.copy(styPath, sty, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(exePath, exe, StandardCopyOption.REPLACE_EXISTING);
+        Files.setPosixFilePermissions(exe, PosixFilePermissions.fromString("rwxrwxrwx"));
 
         Path model = dir.resolve(process.model.name);
         Files.writeString(model, process.model.toString());

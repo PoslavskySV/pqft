@@ -8,7 +8,11 @@ import java.util.Objects;
 /**
  *
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FieldRepresentations {
     /** Map group type -> number of group indices */
     public Map<GroupType, Integer> representations;

@@ -8,7 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /** Field identifier; must conform `[a-zA-Z]+` regex */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FieldType {
     public static final String AntiparticlePrefix = "anti";
 

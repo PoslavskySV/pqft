@@ -2,6 +2,7 @@ package cc.redberry.qplatform.endpoints.kafka;
 
 
 import cc.redberry.qplatform.cluster.Config;
+import cc.redberry.qplatform.cluster.KafkaTopics;
 import cc.redberry.qplatform.endpoints.Authenticator;
 import cc.redberry.qplatform.endpoints.Controller;
 import cc.redberry.qplatform.endpoints.ServerUtil;
@@ -21,7 +22,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.apache.kafka.streams.state.StreamsMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -137,7 +137,7 @@ final class KafkaStoreEndpoint<V> implements Controller {
                 // found data in the local store
                 return mk(val, false);
             } else {
-                logger.error("request id = {}, value can't be found in the local store, while must be there according to metadata host info = {}",
+                logger.info("request id = {}, value can't be found in the local store",
                         id, hostInfo);
                 return mk(defaultInstance, true);
             }
@@ -190,6 +190,8 @@ final class KafkaStoreEndpoint<V> implements Controller {
                          String storeName,
                          Topology topology,
                          T defaultInstance) throws Exception {
+        KafkaTopics.initAll();
+
         Objects.requireNonNull(kafkaAppName, "kafkaAppName");
 
         var config = Config.getKafkaStreamingAppConfig(kafkaAppName);

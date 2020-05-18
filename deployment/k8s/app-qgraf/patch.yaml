@@ -27,3 +27,7 @@ spec:
               value: "WARN"
             - name: QP_LOG_LEVEL
               value: "INFO"
+            - name: QGRAF_BIN
+              value: "/app/qgraf"
+            - name: QGRAF_STY
+              value: "/app/qgrafSty.sty"

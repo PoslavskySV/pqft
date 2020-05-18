@@ -14,9 +14,11 @@ import java.util.Objects;
 import java.util.Set;
 
 /** Operator matrix element. */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
+@JsonAutoDetect(
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class MatrixElementDescription {
     /** maximal number of loops */
     public int nLoops;
@@ -43,7 +45,11 @@ public class MatrixElementDescription {
         return String.join("", ids);
     }
 
-    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+    @JsonAutoDetect(
+            fieldVisibility = JsonAutoDetect.Visibility.ANY,
+            isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+            getterVisibility = JsonAutoDetect.Visibility.NONE,
+            setterVisibility = JsonAutoDetect.Visibility.NONE)
     public static final class ExternalPoint {
         /** field type */
         public FieldType field;
@@ -54,6 +60,8 @@ public class MatrixElementDescription {
         /** is incoming */
         public boolean isIncoming;
         /** indices (if truncated) */
+        @JsonSerialize(using = TensorSerializers.SimpleIndicesSerializer.class)
+        @JsonDeserialize(using = TensorSerializers.SimpleIndicesDeserializer.class)
         public SimpleIndices indices;
         /** momentum (abs) */
         @JsonSerialize(using = TensorSerializers.TensorSerializer.class)

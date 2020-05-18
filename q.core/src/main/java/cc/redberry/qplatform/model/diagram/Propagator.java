@@ -3,10 +3,11 @@ package cc.redberry.qplatform.model.diagram;
 import cc.redberry.core.tensor.Tensor;
 import cc.redberry.core.tensor.TensorField;
 import cc.redberry.qplatform.model.FieldType;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import cc.redberry.qplatform.util.TensorSerializers;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /** Propagator */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Propagator extends DiagramElement {
     /** particle */
     public FieldType fieldType;
@@ -15,6 +16,8 @@ public class Propagator extends DiagramElement {
     /** index of particle on the second edge */
     public int particleIndex2;
     /** propagator momentum */
+    @JsonSerialize(using = TensorSerializers.TensorSerializer.class)
+    @JsonDeserialize(using = TensorSerializers.TensorDeserializer.class)
     public Tensor momentum;
 
     public Propagator() {}

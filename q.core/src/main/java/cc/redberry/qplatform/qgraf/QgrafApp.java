@@ -2,6 +2,7 @@ package cc.redberry.qplatform.qgraf;
 
 import cc.redberry.qplatform.cluster.Config;
 import cc.redberry.qplatform.cluster.KafkaInit;
+import cc.redberry.qplatform.cluster.KafkaTopics;
 import cc.redberry.qplatform.cluster.Topic;
 import cc.redberry.qplatform.endpoints.ServerUtil;
 import cc.redberry.qplatform.endpoints.kafka.TheoriesStore;
@@ -45,7 +46,7 @@ public class QgrafApp {
                                 .generateDiagrams(proc)
                                 .readAll();
 
-                        logger.info("generated {} diagrams pid={}", pid);
+                        logger.info("generated {} diagrams pid={}", diagrams.size(), pid);
                         return diagrams
                                 .stream()
                                 .map(d -> new KeyValue<>(did(th, proc, d), d))
@@ -66,9 +67,7 @@ public class QgrafApp {
         logger.info("Starting application (kafka app name = {})", KafkaAppName);
 
         logger.info("Initializing kafka topics");
-        var kInit = new KafkaInit();
-        kInit.createTopic(RawDiagrams);
-        kInit.execute();
+        KafkaTopics.initAll();
 
         logger.info("Starting kafka app");
 

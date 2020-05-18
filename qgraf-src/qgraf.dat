@@ -1,0 +1,19 @@
+
+% config= nolist, lf, verbose ;
+
+ output= '' ;
+
+ style= 'form.sty' ;
+
+ model= ' phi3';
+
+ in= phi ;
+
+ out= phi ;
+
+ loops= 4;
+
+ loop_momentum= ;
+
+ options= onepi, cycli ;
+

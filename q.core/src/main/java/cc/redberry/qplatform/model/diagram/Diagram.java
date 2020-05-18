@@ -18,7 +18,9 @@ import java.util.List;
  */
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Diagram {
     /** Numeric factor */
     @JsonSerialize(using = TensorSerializers.TensorSerializer.class)
