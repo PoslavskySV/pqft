@@ -15,7 +15,7 @@
         <os.plugin>1.6.1</os.plugin>
         <proto.maven.plugin>0.6.1</proto.maven.plugin>
         <jackson.version>2.11.0</jackson.version>
-        <jackson.micropatch.version>2.11.0</jackson.micropatch.version>
+        <jackson.micropatch.version>2.12.6.1</jackson.micropatch.version>
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
         <jjwt.version>0.10.7</jjwt.version>
         <reactor.version>Dysprosium-SR7</reactor.version>
